@@ -33,15 +33,17 @@ RUN if [[ "$CONTAINER_IMAGE" =~ "centos" ]] ; then \
     dnf install -y epel-release dnf-plugins-core ; \
     dnf config-manager --set-disabled epel ; \
     dnf config-manager --set-enabled powertools ; \
-    dnf module enable -y python38-devel ; \
+    dnf module enable -y python3-devel ; \
     dnf clean all ; \
     rm -rf /var/cache/{dnf,yum} ; \
     rm -rf /var/lib/dnf/history.* ; \
     rm -rf /var/log/* ; \
   fi
+#RUN dnf install -y python38
+
 
 RUN dnf update -y \
-  && dnf install -y glibc-langpack-en python38-pip \
+  && dnf install -y glibc-langpack-en python3-pip \
   && dnf clean all \
   && rm -rf /var/cache/{dnf,yum} \
   && rm -rf /var/lib/dnf/history.* \
@@ -49,7 +51,7 @@ RUN dnf update -y \
 
 # NOTE(pabelanger): We do this to allow users to install python36 but not
 # change python3 to python36.
-RUN alternatives --set python3 /usr/bin/python3.8
+#RUN alternatives --set python3 /usr/bin/python3.9
 
 # Upgrade pip to fix wheel cache for locally built wheels.
 # See https://github.com/pypa/pip/issues/6852
@@ -57,7 +59,7 @@ RUN python3 -m pip install --no-cache-dir -U pip
 
 RUN dnf update -y \
   && dnf install -y gcc \
-  && pip3 install dumb-init --no-cache-dir -c constraints.txt \
+  && pip install dumb-init --no-cache-dir -c constraints.txt \
   && dnf remove -y gcc \
   && dnf clean all \
   && rm -rf /var/cache/{dnf,yum} \
